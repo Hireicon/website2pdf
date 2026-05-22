@@ -16,8 +16,10 @@ function errorHandler(err, req, res, next) {
     logger.debug('Operational error', { message: err.message, statusCode });
   }
 
+  const isDev = process.env.NODE_ENV !== 'production';
   res.status(statusCode).json({
-    error: isOperational ? err.message : 'An unexpected error occurred',
+    error: isOperational ? err.message : isDev ? err.message : 'An unexpected error occurred',
+    ...(isDev && !isOperational && { stack: err.stack }),
     code: err.code || undefined,
   });
 }
