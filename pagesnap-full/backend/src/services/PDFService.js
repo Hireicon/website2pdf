@@ -3,7 +3,8 @@ const logger = require('../utils/logger');
 const { AppError } = require('../utils/errors');
 
 const MAX_CONCURRENT_PAGES = 5;
-const NAVIGATION_TIMEOUT = 30000; // 30s
+const NAVIGATION_TIMEOUT = 45000; // 45s
+const NETWORKIDLE_TIMEOUT = 15000; // 15s — give up on networkidle, fall back to load
 const PDF_TIMEOUT = 60000;        // 60s
 
 // Reader mode CSS — strips nav, ads, cookie banners
@@ -108,11 +109,16 @@ async function convertUrlToPdf(parsedUrl, options = {}) {
       await page.route('**/*.{woff,woff2,ttf,eot}', route => route.abort());
     }
 
-    // Navigate
-    await page.goto(parsedUrl.href, {
-      waitUntil: 'networkidle',
-      timeout: NAVIGATION_TIMEOUT,
-    });
+    // Navigate — try networkidle first (better rendering), fall back to load for SPAs
+    try {
+      await page.goto(parsedUrl.href, {
+        waitUntil: 'networkidle',
+        timeout: NETWORKIDLE_TIMEOUT,
+      });
+    } catch {
+      // SPAs and pages with persistent connections never reach networkidle — proceed anyway
+      await page.waitForLoadState('load', { timeout: NAVIGATION_TIMEOUT });
+    }
 
     // Get page title
     const pageTitle = await page.title().catch(() => parsedUrl.hostname);
