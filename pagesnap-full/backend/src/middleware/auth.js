@@ -40,6 +40,7 @@ async function authenticate(req, res, next) {
  * Optional auth — attaches req.user if token present, otherwise continues.
  */
 async function optionalAuth(req, res, next) {
+  if (req.user) return next(); // already authenticated (e.g., by apiKeyAuth)
   const header = req.headers.authorization;
   if (!header || !header.startsWith('Bearer ')) {
     req.user = null;

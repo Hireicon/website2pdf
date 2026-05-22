@@ -160,7 +160,10 @@ export default function ConverterBox() {
           <AlertCircle size={16} className="text-red-500 mt-0.5 flex-shrink-0" />
           <div>
             <p className="text-sm text-red-800">{error}</p>
-            <button onClick={reset} className="text-xs text-red-600 hover:underline mt-1">
+            <button
+              onClick={() => { setStatus('idle'); setError('') }}
+              className="text-xs text-red-600 hover:underline mt-1"
+            >
               Try again
             </button>
           </div>

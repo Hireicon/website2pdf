@@ -81,11 +81,13 @@ async function conversionLimiter(req, res, next) {
           signupUrl: '/register',
         });
       }
-      global._anonConvCounts.set(key, count + 1);
-      // Clean old entries periodically
-      if (global._anonConvCounts.size > 10000) {
-        global._anonConvCounts.clear();
-      }
+      // Increment only after a successful response, consistent with authenticated user behavior
+      res.on('finish', () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          global._anonConvCounts.set(key, (global._anonConvCounts.get(key) || 0) + 1);
+          if (global._anonConvCounts.size > 10000) global._anonConvCounts.clear();
+        }
+      });
     }
 
     next();
