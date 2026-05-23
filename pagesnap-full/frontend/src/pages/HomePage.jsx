@@ -63,7 +63,7 @@ export default function HomePage() {
 
         {/* Trust strip */}
         <div className="flex justify-center flex-wrap gap-6 mt-8">
-          {['Playwright rendering', 'No login needed', 'Files auto-deleted', 'Shareable link'].map(t => (
+          {['Advanced Rendering', 'No login needed', 'Files auto-deleted', 'Shareable link'].map(t => (
             <span key={t} className="flex items-center gap-1.5 text-xs text-ink-3">
               <span className="w-1 h-1 rounded-full bg-ink-3" />{t}
             </span>
