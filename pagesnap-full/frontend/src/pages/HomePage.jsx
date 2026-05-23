@@ -7,7 +7,7 @@ import { useAuthStore } from '../store/authStore'
 const FEATURES = [
   { icon: <Link2 size={20} />, title: 'Shareable link included', desc: 'Every PDF gets a unique link you can paste into email, Slack, or any document.' },
   { icon: <Eye size={20} />,   title: 'Reader mode', desc: 'Strip out ads, navigation, cookie banners. Just the article, cleanly typeset.' },
-  { icon: <Zap size={20} />,   title: 'Playwright-powered', desc: 'A real Chromium browser renders the page — JS, fonts, images and all. No broken layouts.' },
+  { icon: <Zap size={20} />,   title: 'Full Page into PDF', desc: 'Capture all scrollable content of a website, not just the visible portion, into a single page PDF.' },
   { icon: <Shield size={20} />, title: 'Files deleted after 24h', desc: 'Free tier PDFs expire in 24 hours. Upgrade for 30-day or permanent links.' },
   { icon: <Clock size={20} />, title: '< 5 second renders', desc: 'Most pages convert in under 5 seconds. Complex JS apps may take up to 12s.' },
   { icon: <FileDown size={20} />, title: 'A4, Letter & A3', desc: 'Choose your paper size before converting. Portrait orientation, print-ready.' },
