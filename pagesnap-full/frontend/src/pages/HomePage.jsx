@@ -114,8 +114,8 @@ export default function HomePage() {
         <div className="grid md:grid-cols-3 gap-5">
           {[
             { name: 'Free', price: '$0', period: 'forever', features: ['3 conversions/day', 'Shareable links (24h)', 'A3 / A4 / Letter format', 'Reader mode'], cta: 'Start free', highlight: false },
-            { name: 'Pro', price: '$5', period: '/month', features: ['Unlimited conversions', 'Shareable links (30 days)', 'All formats', 'API access (1K/mo)'], cta: 'Get Pro', highlight: true },
-            { name: 'Business', price: '$29', period: '/month', features: ['Unlimited conversions', 'Permanent links', 'All formats', 'API access (50K/mo)', 'Custom branding'], cta: 'Contact us', highlight: false },
+            { name: 'Pro', price: '$5', period: '/month', features: ['50 conversions/day', 'Shareable links (30 days)', 'All formats', 'Priority rendering'], cta: 'Get Pro', highlight: true },
+            { name: 'Business', price: '$29', period: '/month', features: ['500 conversions/day', 'Permanent links', 'All formats', 'Custom branding'], cta: 'Contact us', highlight: false },
           ].map(({ name, price, period, features, cta, highlight }) => (
             <div key={name} className={`border rounded-xl p-8 relative ${highlight ? 'border-accent border-2' : 'border-border'}`}>
               {highlight && (

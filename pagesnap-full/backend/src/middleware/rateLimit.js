@@ -4,8 +4,8 @@ const rateLimit = require('express-rate-limit');
 const PLAN_LIMITS = {
   anonymous: 3,
   free:      3,
-  pro:       Infinity,
-  business:  Infinity,
+  pro:       50,
+  business:  500,
 };
 
 /**
@@ -40,9 +40,6 @@ async function conversionLimiter(req, res, next) {
     const { query } = require('../db/connection');
     const plan = req.user?.plan || 'anonymous';
     const limit = PLAN_LIMITS[plan] ?? PLAN_LIMITS.free;
-
-    if (limit === Infinity) return next(); // Pro/Business — unlimited
-
     const userId = req.user?.id;
 
     if (userId) {
@@ -58,7 +55,7 @@ async function conversionLimiter(req, res, next) {
 
       if (used >= limit) {
         return res.status(429).json({
-          error: `Daily limit reached (${limit}/day on ${plan} plan). Upgrade for unlimited conversions.`,
+          error: `Daily limit reached (${limit}/day on ${plan} plan). Upgrade to a higher plan for more conversions.`,
           code: 'DAILY_LIMIT',
           limit,
           used,
