@@ -42,7 +42,7 @@ function AuthForm({ mode }) {
         <div className="bg-white border border-border rounded-xl p-8">
           <h1 className="font-serif text-2xl mb-1">{isRegister ? 'Create account' : 'Welcome back'}</h1>
           <p className="text-sm text-ink-3 mb-7">
-            {isRegister ? 'Free forever for 5 conversions/day.' : 'Sign in to your account.'}
+            {isRegister ? 'Free forever for 3 conversions/day.' : 'Sign in to your account.'}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">

@@ -32,7 +32,7 @@ const migrations = [
         page_title    VARCHAR(255),
         storage_path  VARCHAR(512) NOT NULL,
         file_size_kb  INT,
-        format        ENUM('A4','Letter','A3') DEFAULT 'A4',
+        format        ENUM('A4','Letter','A3') DEFAULT 'A3',
         reader_mode   BOOLEAN DEFAULT FALSE,
         render_ms     INT,
         status        ENUM('pending','done','error') DEFAULT 'pending',

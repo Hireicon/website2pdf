@@ -91,7 +91,7 @@ function releasePage() {
  * @returns {{ buffer: Buffer, renderMs: number, pageTitle: string }}
  */
 async function convertUrlToPdf(parsedUrl, options = {}) {
-  const { format = 'A4', readerMode = false } = options;
+  const { format = 'A3', readerMode = false } = options;
   const startTime = Date.now();
 
   await acquirePage();

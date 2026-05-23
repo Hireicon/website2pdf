@@ -113,7 +113,7 @@ export default function HomePage() {
         <h2 className="font-serif text-4xl mb-12">Simple, honest pricing.</h2>
         <div className="grid md:grid-cols-3 gap-5">
           {[
-            { name: 'Free', price: '$0', period: 'forever', features: ['5 conversions/day', 'Shareable links (24h)', 'A4 / Letter format', 'Reader mode'], cta: 'Start free', highlight: false },
+            { name: 'Free', price: '$0', period: 'forever', features: ['3 conversions/day', 'Shareable links (24h)', 'A3 / A4 / Letter format', 'Reader mode'], cta: 'Start free', highlight: false },
             { name: 'Pro', price: '$5', period: '/month', features: ['Unlimited conversions', 'Shareable links (30 days)', 'All formats', 'API access (1K/mo)'], cta: 'Get Pro', highlight: true },
             { name: 'Business', price: '$29', period: '/month', features: ['Unlimited conversions', 'Permanent links', 'All formats', 'API access (50K/mo)', 'Custom branding'], cta: 'Contact us', highlight: false },
           ].map(({ name, price, period, features, cta, highlight }) => (
@@ -154,7 +154,7 @@ export default function HomePage() {
           Stop emailing files.<br />
           <em className="text-accent/90 italic">Send a link.</em>
         </h2>
-        <p className="text-ink-3 mb-8">Free forever for 5 conversions a day. No credit card required.</p>
+        <p className="text-ink-3 mb-8">Free forever for 3 conversions a day. No credit card required.</p>
         <Link to="/register" className="inline-block bg-accent hover:bg-accent-hover text-white font-semibold px-8 py-4 rounded-md transition">
           Get started free →
         </Link>

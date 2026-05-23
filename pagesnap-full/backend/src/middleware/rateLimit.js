@@ -3,7 +3,7 @@ const rateLimit = require('express-rate-limit');
 // Plan-based daily conversion limits
 const PLAN_LIMITS = {
   anonymous: 3,
-  free:      5,
+  free:      3,
   pro:       Infinity,
   business:  Infinity,
 };

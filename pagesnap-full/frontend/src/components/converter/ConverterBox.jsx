@@ -8,7 +8,7 @@ const STEPS = ['Loading page...', 'Rendering content...', 'Generating PDF...', '
 export default function ConverterBox() {
   const [url, setUrl]           = useState('')
   const [readerMode, setReader] = useState(false)
-  const [format, setFormat]     = useState('A4')
+  const [format, setFormat]     = useState('A3')
   const [status, setStatus]     = useState('idle') // idle | loading | done | error
   const [progress, setProgress] = useState(0)
   const [stepIdx, setStepIdx]   = useState(0)
@@ -133,9 +133,9 @@ export default function ConverterBox() {
               disabled={status === 'loading'}
               className="text-sm border border-border rounded-md px-2 py-1 bg-cream text-ink cursor-pointer"
             >
+              <option>A3</option>
               <option>A4</option>
               <option>Letter</option>
-              <option>A3</option>
             </select>
           </label>
         </div>

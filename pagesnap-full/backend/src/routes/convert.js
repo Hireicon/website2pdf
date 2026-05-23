@@ -16,7 +16,7 @@ const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 8);
 // Request schema
 const convertSchema = z.object({
   url:        z.string().min(3).max(2048),
-  format:     z.enum(['A4', 'Letter', 'A3']).optional().default('A4'),
+  format:     z.enum(['A4', 'Letter', 'A3']).optional().default('A3'),
   readerMode: z.boolean().optional().default(false),
 });
 
