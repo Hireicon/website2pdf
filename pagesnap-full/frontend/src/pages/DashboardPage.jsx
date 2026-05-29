@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { LogOut, FileDown, ExternalLink, Copy, Check, User, Zap, Star } from 'lucide-react'
+import { LogOut, FileDown, ExternalLink, Copy, Check, User, Zap, Star, CreditCard } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../lib/api'
 import { useAuthStore } from '../store/authStore'
@@ -78,28 +78,81 @@ function ConversionRow({ item }) {
   )
 }
 
-function UpgradeBanner({ plan }) {
-  if (plan === 'business') return null
+async function startCheckout(plan, setLoading) {
+  try {
+    setLoading(plan)
+    const { data } = await api.post('/billing/checkout', { plan })
+    window.location.href = data.url
+  } catch (err) {
+    toast.error(err.response?.data?.error || 'Could not start checkout')
+    setLoading(null)
+  }
+}
 
-  if (plan === 'pro') return (
-    <div className="mb-10 bg-amber-50 border border-amber-200 rounded-xl p-6 flex items-center justify-between gap-4">
+async function openPortal(setLoading) {
+  try {
+    setLoading('portal')
+    const { data } = await api.post('/billing/portal')
+    window.location.href = data.url
+  } catch (err) {
+    toast.error(err.response?.data?.error || 'Could not open billing portal')
+    setLoading(null)
+  }
+}
+
+function UpgradeBanner({ plan }) {
+  const [loading, setLoading] = useState(null)
+
+  if (plan === 'business') return (
+    <div className="mb-10 bg-green-50 border border-green-200 rounded-xl p-5 flex items-center justify-between gap-4">
       <div className="flex items-center gap-3">
-        <Star size={20} className="text-amber-500 flex-shrink-0" />
+        <Star size={18} className="text-green-600 flex-shrink-0" />
         <div>
-          <p className="text-sm font-semibold text-ink">Upgrade to Business</p>
-          <p className="text-xs text-ink-3 mt-0.5">500 conversions/day · Permanent links · Custom branding</p>
+          <p className="text-sm font-semibold text-ink">Business plan — 500 conversions/day</p>
+          <p className="text-xs text-ink-3 mt-0.5">Manage billing, invoices, or cancel anytime.</p>
         </div>
       </div>
-      <a
-        href="mailto:hello@pagesnap.app?subject=Business Plan"
-        className="flex-shrink-0 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-5 py-2.5 rounded-md transition"
+      <button
+        onClick={() => openPortal(setLoading)}
+        disabled={loading === 'portal'}
+        className="flex-shrink-0 flex items-center gap-2 border border-border hover:border-accent text-sm font-semibold px-4 py-2 rounded-md transition disabled:opacity-50"
       >
-        Contact us — $29/mo
-      </a>
+        <CreditCard size={14} />
+        {loading === 'portal' ? 'Opening...' : 'Manage billing'}
+      </button>
     </div>
   )
 
-  // free plan — show both Pro and Business
+  if (plan === 'pro') return (
+    <div className="mb-10 bg-blue-50 border border-blue-200 rounded-xl p-5 flex items-center justify-between gap-4 flex-wrap gap-y-3">
+      <div className="flex items-center gap-3">
+        <Zap size={18} className="text-blue-500 flex-shrink-0" />
+        <div>
+          <p className="text-sm font-semibold text-ink">Pro plan — 50 conversions/day</p>
+          <p className="text-xs text-ink-3 mt-0.5">Upgrade to Business for 500/day + permanent links.</p>
+        </div>
+      </div>
+      <div className="flex gap-2 flex-shrink-0">
+        <button
+          onClick={() => startCheckout('business', setLoading)}
+          disabled={!!loading}
+          className="bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-md transition disabled:opacity-50"
+        >
+          {loading === 'business' ? 'Redirecting...' : 'Upgrade to Business — $29/mo'}
+        </button>
+        <button
+          onClick={() => openPortal(setLoading)}
+          disabled={!!loading}
+          className="flex items-center gap-1.5 border border-border hover:border-accent text-sm px-3 py-2 rounded-md transition disabled:opacity-50"
+        >
+          <CreditCard size={13} />
+          {loading === 'portal' ? '...' : 'Billing'}
+        </button>
+      </div>
+    </div>
+  )
+
+  // free plan — show both Pro and Business cards
   return (
     <div className="mb-10">
       <div className="flex items-center gap-2 mb-4">
@@ -124,12 +177,13 @@ function UpgradeBanner({ plan }) {
               </li>
             ))}
           </ul>
-          <a
-            href="mailto:hello@pagesnap.app?subject=Pro Plan"
-            className="block w-full text-center bg-accent hover:bg-accent-hover text-white text-sm font-semibold py-2.5 rounded-md transition"
+          <button
+            onClick={() => startCheckout('pro', setLoading)}
+            disabled={!!loading}
+            className="w-full bg-accent hover:bg-accent-hover text-white text-sm font-semibold py-2.5 rounded-md transition disabled:opacity-50"
           >
-            Get Pro
-          </a>
+            {loading === 'pro' ? 'Redirecting to Stripe...' : 'Get Pro — $5/mo'}
+          </button>
         </div>
 
         {/* Business */}
@@ -146,12 +200,13 @@ function UpgradeBanner({ plan }) {
               </li>
             ))}
           </ul>
-          <a
-            href="mailto:hello@pagesnap.app?subject=Business Plan"
-            className="block w-full text-center border border-border hover:border-accent text-ink text-sm font-semibold py-2.5 rounded-md transition"
+          <button
+            onClick={() => startCheckout('business', setLoading)}
+            disabled={!!loading}
+            className="w-full border border-border hover:border-accent text-ink text-sm font-semibold py-2.5 rounded-md transition disabled:opacity-50"
           >
-            Contact us
-          </a>
+            {loading === 'business' ? 'Redirecting to Stripe...' : 'Get Business — $29/mo'}
+          </button>
         </div>
       </div>
     </div>
@@ -160,9 +215,20 @@ function UpgradeBanner({ plan }) {
 
 export default function DashboardPage() {
   const [page, setPage] = useState(1)
-  const user   = useAuthStore((s) => s.user)
-  const logout = useAuthStore((s) => s.logout)
-  const navigate = useNavigate()
+  const user      = useAuthStore((s) => s.user)
+  const updateUser = useAuthStore((s) => s.updateUser)
+  const logout    = useAuthStore((s) => s.logout)
+  const navigate  = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  // Refresh user plan after Stripe redirect
+  useEffect(() => {
+    if (searchParams.get('upgrade') === 'success') {
+      toast.success('Payment successful! Your plan has been upgraded.')
+      setSearchParams({})
+      api.get('/auth/me').then(({ data }) => updateUser(data.user)).catch(() => {})
+    }
+  }, [])
 
   const { data, isLoading } = useQuery({
     queryKey: ['conversions', page],

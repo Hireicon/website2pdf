@@ -25,6 +25,7 @@ const authRoutes = require('./routes/auth');
 const convertRoutes = require('./routes/convert');
 const shareRoutes = require('./routes/share');
 const userRoutes = require('./routes/user');
+const { router: billingRoutes, handleWebhook } = require('./routes/billing');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -40,6 +41,9 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key'],
 }));
+
+// ── Stripe webhook — must receive raw body before JSON parser ─────
+app.post('/api/v1/billing/webhook', express.raw({ type: 'application/json' }), handleWebhook);
 
 // ── Body parsing ─────────────────────────────────────────────────
 app.use(express.json({ limit: '10kb' }));
@@ -64,6 +68,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/convert', convertRoutes);
 app.use('/api/v1/share', shareRoutes);
 app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/billing', billingRoutes);
 
 // ── 404 handler ───────────────────────────────────────────────────
 app.use('*', (req, res) => {

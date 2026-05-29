@@ -105,6 +105,13 @@ const migrations = [
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `,
   },
+  {
+    name: '007_add_stripe_subscription_id',
+    sql: `
+      ALTER TABLE users
+        ADD COLUMN IF NOT EXISTS stripe_subscription_id VARCHAR(64) DEFAULT NULL;
+    `,
+  },
 ];
 
 async function migrate() {
