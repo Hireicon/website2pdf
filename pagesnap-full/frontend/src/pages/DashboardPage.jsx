@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { LogOut, FileDown, ExternalLink, Copy, Check, User } from 'lucide-react'
+import { LogOut, FileDown, ExternalLink, Copy, Check, User, Zap, Star } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../lib/api'
 import { useAuthStore } from '../store/authStore'
@@ -78,6 +78,86 @@ function ConversionRow({ item }) {
   )
 }
 
+function UpgradeBanner({ plan }) {
+  if (plan === 'business') return null
+
+  if (plan === 'pro') return (
+    <div className="mb-10 bg-amber-50 border border-amber-200 rounded-xl p-6 flex items-center justify-between gap-4">
+      <div className="flex items-center gap-3">
+        <Star size={20} className="text-amber-500 flex-shrink-0" />
+        <div>
+          <p className="text-sm font-semibold text-ink">Upgrade to Business</p>
+          <p className="text-xs text-ink-3 mt-0.5">500 conversions/day · Permanent links · Custom branding</p>
+        </div>
+      </div>
+      <a
+        href="mailto:hello@pagesnap.app?subject=Business Plan"
+        className="flex-shrink-0 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-5 py-2.5 rounded-md transition"
+      >
+        Contact us — $29/mo
+      </a>
+    </div>
+  )
+
+  // free plan — show both Pro and Business
+  return (
+    <div className="mb-10">
+      <div className="flex items-center gap-2 mb-4">
+        <Zap size={15} className="text-accent" />
+        <h3 className="text-sm font-semibold text-ink">Upgrade your plan</h3>
+      </div>
+      <div className="grid sm:grid-cols-2 gap-4">
+        {/* Pro */}
+        <div className="bg-white border-2 border-accent rounded-xl p-5 relative">
+          <span className="absolute -top-2.5 left-4 text-xs font-semibold bg-accent text-white px-2.5 py-0.5 rounded-full">
+            Most popular
+          </span>
+          <div className="flex items-end gap-1 mb-1 mt-1">
+            <span className="font-serif text-2xl text-ink">$5</span>
+            <span className="text-xs text-ink-3 mb-1">/month</span>
+          </div>
+          <p className="text-sm font-semibold text-ink mb-3">Pro</p>
+          <ul className="space-y-1.5 mb-5">
+            {['50 conversions/day', 'Shareable links (30 days)', 'All formats', 'Priority rendering'].map(f => (
+              <li key={f} className="flex items-center gap-2 text-xs text-ink-2">
+                <Check size={13} className="text-accent flex-shrink-0" />{f}
+              </li>
+            ))}
+          </ul>
+          <a
+            href="mailto:hello@pagesnap.app?subject=Pro Plan"
+            className="block w-full text-center bg-accent hover:bg-accent-hover text-white text-sm font-semibold py-2.5 rounded-md transition"
+          >
+            Get Pro
+          </a>
+        </div>
+
+        {/* Business */}
+        <div className="bg-white border border-border rounded-xl p-5">
+          <div className="flex items-end gap-1 mb-1 mt-1">
+            <span className="font-serif text-2xl text-ink">$29</span>
+            <span className="text-xs text-ink-3 mb-1">/month</span>
+          </div>
+          <p className="text-sm font-semibold text-ink mb-3">Business</p>
+          <ul className="space-y-1.5 mb-5">
+            {['500 conversions/day', 'Permanent links', 'All formats', 'Custom branding'].map(f => (
+              <li key={f} className="flex items-center gap-2 text-xs text-ink-2">
+                <Check size={13} className="text-green-500 flex-shrink-0" />{f}
+              </li>
+            ))}
+          </ul>
+          <a
+            href="mailto:hello@pagesnap.app?subject=Business Plan"
+            className="block w-full text-center border border-border hover:border-accent text-ink text-sm font-semibold py-2.5 rounded-md transition"
+          >
+            Contact us
+          </a>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function DashboardPage() {
   const [page, setPage] = useState(1)
   const user   = useAuthStore((s) => s.user)
@@ -121,6 +201,9 @@ export default function DashboardPage() {
           <h2 className="font-serif text-2xl mb-5">Convert a page</h2>
           <ConverterBox />
         </div>
+
+        {/* Upgrade banner */}
+        <UpgradeBanner plan={user?.plan} />
 
         {/* History */}
         <div>
