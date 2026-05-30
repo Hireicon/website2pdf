@@ -7,8 +7,9 @@ const STEPS = ['Loading page...', 'Rendering content...', 'Generating PDF...', '
 
 export default function ConverterBox() {
   const [url, setUrl]           = useState('')
-  const [readerMode, setReader] = useState(false)
-  const [format, setFormat]     = useState('A3')
+  const [readerMode, setReader]       = useState(false)
+  const [format, setFormat]           = useState('A3')
+  const [addTimestamp, setTimestamp]  = useState(false)
   const [status, setStatus]     = useState('idle') // idle | loading | done | error
   const [progress, setProgress] = useState(0)
   const [stepIdx, setStepIdx]   = useState(0)
@@ -50,7 +51,7 @@ export default function ConverterBox() {
     startProgress()
 
     try {
-      const { data } = await api.post('/convert', { url: url.trim(), format, readerMode })
+      const { data } = await api.post('/convert', { url: url.trim(), format, readerMode, addTimestamp })
       stopProgress()
       setResult(data)
       setStatus('done')
@@ -124,6 +125,16 @@ export default function ConverterBox() {
               className="w-4 h-4 accent-accent cursor-pointer"
             />
             Reader mode <span className="text-ink-3 text-xs">(strips ads &amp; nav)</span>
+          </label>
+          <label className="flex items-center gap-2 text-sm text-ink-2 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={addTimestamp}
+              onChange={(e) => setTimestamp(e.target.checked)}
+              disabled={status === 'loading'}
+              className="w-4 h-4 accent-accent cursor-pointer"
+            />
+            Timestamp <span className="text-ink-3 text-xs">(on every page)</span>
           </label>
           <label className="flex items-center gap-2 text-sm text-ink-2 ml-auto">
             Format:

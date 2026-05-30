@@ -90,8 +90,17 @@ function releasePage() {
  * @param {object} options    - { format, readerMode }
  * @returns {{ buffer: Buffer, renderMs: number, pageTitle: string }}
  */
+function buildTimestampFooter(ts) {
+  return `
+    <div style="width:100%;font-family:monospace;font-size:9px;color:#888;
+                display:flex;justify-content:space-between;padding:0 24px;box-sizing:border-box;">
+      <span>Generated: ${ts}</span>
+      <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
+    </div>`;
+}
+
 async function convertUrlToPdf(parsedUrl, options = {}) {
-  const { format = 'A3', readerMode = false } = options;
+  const { format = 'A3', readerMode = false, addTimestamp = false } = options;
   const startTime = Date.now();
 
   await acquirePage();
@@ -131,12 +140,16 @@ async function convertUrlToPdf(parsedUrl, options = {}) {
     }
 
     // Generate PDF buffer
+    const ts = new Date().toLocaleString('en-GB', { timeZone: 'UTC', hour12: false }) + ' UTC';
     const buffer = await page.pdf({
       format,
       printBackground: !readerMode,
+      displayHeaderFooter: addTimestamp,
+      headerTemplate: '<span></span>',
+      footerTemplate: addTimestamp ? buildTimestampFooter(ts) : '<span></span>',
       margin: readerMode
-        ? { top: '40px', bottom: '40px', left: '40px', right: '40px' }
-        : { top: '20px', bottom: '20px', left: '20px', right: '20px' },
+        ? { top: '40px', bottom: addTimestamp ? '36px' : '40px', left: '40px', right: '40px' }
+        : { top: '20px', bottom: addTimestamp ? '36px' : '20px', left: '20px', right: '20px' },
       timeout: PDF_TIMEOUT,
     });
 

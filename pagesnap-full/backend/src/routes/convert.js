@@ -15,9 +15,10 @@ const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 8);
 
 // Request schema
 const convertSchema = z.object({
-  url:        z.string().min(3).max(2048),
-  format:     z.enum(['A4', 'Letter', 'A3']).optional().default('A3'),
-  readerMode: z.boolean().optional().default(false),
+  url:          z.string().min(3).max(2048),
+  format:       z.enum(['A4', 'Letter', 'A3']).optional().default('A3'),
+  readerMode:   z.boolean().optional().default(false),
+  addTimestamp: z.boolean().optional().default(false),
 });
 
 // Plan-based link expiry durations (ms)
@@ -36,7 +37,7 @@ router.post('/', apiKeyAuth, optionalAuth, conversionLimiter, async (req, res, n
     if (!parsed.success) {
       throw new AppError(parsed.error.errors[0].message, 400);
     }
-    const { url, format, readerMode } = parsed.data;
+    const { url, format, readerMode, addTimestamp } = parsed.data;
 
     // SSRF protection — validate URL before touching Playwright
     const parsedUrl = await validateUrl(url);
@@ -55,7 +56,7 @@ router.post('/', apiKeyAuth, optionalAuth, conversionLimiter, async (req, res, n
     // Render PDF
     let buffer, renderMs, pageTitle;
     try {
-      ({ buffer, renderMs, pageTitle } = await convertUrlToPdf(parsedUrl, { format, readerMode }));
+      ({ buffer, renderMs, pageTitle } = await convertUrlToPdf(parsedUrl, { format, readerMode, addTimestamp }));
     } catch (renderErr) {
       await query("UPDATE conversions SET status='error', error_msg=? WHERE id=?",
         [renderErr.message, conversionId]);
